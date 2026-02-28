@@ -19,12 +19,15 @@ export interface InvoiceData {
   clientCnpjCpf: string;
   clientAddress: string;
 
-  // Pagamento PIX
+  // Pagamento
+  paymentMethod: 'PIX' | 'Transferência Bancária' | 'Boleto' | 'Outro';
   pixKey: string;
   pixKeyType: string;
   bankName: string;
+  bankAgency: string;
+  bankAccount: string;
 
-  // Detalhes da invoice
+  // Detalhes do recibo
   invoiceNumber: string;
   issueDate: string;
   dueDate: string;
@@ -44,10 +47,13 @@ export const defaultInvoice: InvoiceData = {
   clientEmail: '',
   clientCnpjCpf: '',
   clientAddress: '',
+  paymentMethod: 'PIX',
   pixKey: '',
   pixKeyType: 'CPF',
   bankName: '',
-  invoiceNumber: 'INV-0001',
+  bankAgency: '',
+  bankAccount: '',
+  invoiceNumber: 'REC-0001',
   issueDate: new Date().toISOString().split('T')[0],
   dueDate: '',
   notes: '',

@@ -31,7 +31,7 @@ export default function InvoicePreview({ data, subtotal }: Props) {
             {data.companyEmail && <p className="text-xs text-muted-foreground">{data.companyEmail}</p>}
           </div>
           <div className="text-right">
-            <h1 className="font-mono-display text-3xl font-bold tracking-tight text-accent">INVOICE</h1>
+            <h1 className="font-mono-display text-3xl font-bold tracking-tight text-accent">RECIBO</h1>
             <p className="font-mono-display text-sm text-muted-foreground mt-1">{data.invoiceNumber}</p>
           </div>
         </div>
@@ -96,11 +96,18 @@ export default function InvoicePreview({ data, subtotal }: Props) {
         </div>
 
         {/* Payment Info */}
-        {(data.pixKey || data.bankName) && (
+        {(data.pixKey || data.bankName || data.paymentMethod === 'Boleto') && (
           <div className="border-t border-border pt-6 mb-6">
             <p className="font-mono-display text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-3">Dados para Pagamento</p>
+            <p className="text-sm mb-1"><span className="text-muted-foreground">Método:</span> {data.paymentMethod}</p>
             {data.bankName && <p className="text-sm"><span className="text-muted-foreground">Banco:</span> {data.bankName}</p>}
-            {data.pixKey && (
+            {data.paymentMethod === 'Transferência Bancária' && (
+              <>
+                {data.bankAgency && <p className="text-sm"><span className="text-muted-foreground">Agência:</span> {data.bankAgency}</p>}
+                {data.bankAccount && <p className="text-sm"><span className="text-muted-foreground">Conta:</span> {data.bankAccount}</p>}
+              </>
+            )}
+            {data.paymentMethod === 'PIX' && data.pixKey && (
               <p className="text-sm">
                 <span className="text-muted-foreground">PIX ({data.pixKeyType}):</span> {data.pixKey}
               </p>

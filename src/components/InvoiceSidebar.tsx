@@ -1,5 +1,6 @@
 import { Plus, Trash2, Download } from 'lucide-react';
 import { InvoiceData, InvoiceItem } from '@/types/invoice';
+import { useState, useRef } from 'react';
 
 interface Props {
   data: InvoiceData;
@@ -18,8 +19,21 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
   return <label className="block text-xs font-medium text-muted-foreground mb-1">{children}</label>;
 }
 
-function Field({ label, value, onChange, placeholder, type = 'text' }: {
-  label: string; value: string | number; onChange: (v: string) => void; placeholder?: string; type?: string;
+function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  if (digits.length <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function isValidEmail(email: string): boolean {
+  if (!email) return true;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function Field({ label, value, onChange, placeholder, type = 'text', error }: {
+  label: string; value: string | number; onChange: (v: string) => void; placeholder?: string; type?: string; error?: string;
 }) {
   return (
     <div className="mb-3">
@@ -29,51 +43,138 @@ function Field({ label, value, onChange, placeholder, type = 'text' }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors"
+        className={`w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors ${error ? 'border-destructive' : 'border-input'}`}
+      />
+      {error && <p className="text-[11px] text-destructive mt-1">{error}</p>}
+    </div>
+  );
+}
+
+function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => void }) {
+  const [localValue, setLocalValue] = useState(rate === 0 ? '' : String(rate));
+  const [focused, setFocused] = useState(false);
+
+  // Sync from parent when not focused
+  if (!focused && rate !== 0 && String(rate) !== localValue) {
+    setLocalValue(String(rate));
+  }
+  if (!focused && rate === 0 && localValue !== '') {
+    setLocalValue('');
+  }
+
+  return (
+    <div>
+      <span className="text-[10px] text-muted-foreground">Valor (R$)</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        value={localValue}
+        onFocus={() => setFocused(true)}
+        onChange={e => {
+          const val = e.target.value;
+          setLocalValue(val);
+          if (val === '') {
+            onChange(0);
+          } else {
+            const num = parseFloat(val);
+            if (!isNaN(num)) onChange(num);
+          }
+        }}
+        onBlur={() => {
+          setFocused(false);
+          if (localValue === '') onChange(0);
+        }}
+        placeholder="0,00"
+        className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
       />
     </div>
   );
 }
 
 export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, onPrint }: Props) {
+  const [emailErrors, setEmailErrors] = useState<{ company?: string; client?: string }>({});
+
+  const handleEmailChange = (field: 'companyEmail' | 'clientEmail', value: string) => {
+    updateField(field, value);
+    const key = field === 'companyEmail' ? 'company' : 'client';
+    if (value && !isValidEmail(value)) {
+      setEmailErrors(prev => ({ ...prev, [key]: 'E-mail inválido' }));
+    } else {
+      setEmailErrors(prev => ({ ...prev, [key]: undefined }));
+    }
+  };
+
+  const handlePhoneChange = (value: string) => {
+    updateField('companyPhone', formatPhone(value));
+  };
+
   return (
     <aside className="no-print w-full md:w-[340px] lg:w-[380px] shrink-0 h-screen overflow-y-auto border-r border-border bg-card p-5">
-      <h1 className="font-mono-display text-lg font-bold mb-6 tracking-tight">Gerador de Invoice</h1>
+      <h1 className="font-mono-display text-lg font-bold mb-6 tracking-tight">Gerador de Recibo</h1>
 
       <SectionLabel>Emissor</SectionLabel>
       <Field label="Razão Social / Nome" value={data.companyName} onChange={v => updateField('companyName', v)} placeholder="Sua Empresa Ltda" />
       <Field label="CNPJ / CPF" value={data.companyCnpj} onChange={v => updateField('companyCnpj', v)} placeholder="00.000.000/0000-00" />
-      <Field label="E-mail" value={data.companyEmail} onChange={v => updateField('companyEmail', v)} placeholder="contato@empresa.com" />
+      <Field label="E-mail" value={data.companyEmail} onChange={v => handleEmailChange('companyEmail', v)} placeholder="contato@empresa.com" error={emailErrors.company} />
       <Field label="Endereço" value={data.companyAddress} onChange={v => updateField('companyAddress', v)} placeholder="Rua Exemplo, 123 - São Paulo, SP" />
-      <Field label="Telefone" value={data.companyPhone} onChange={v => updateField('companyPhone', v)} placeholder="(11) 99999-9999" />
+      <Field label="Telefone" value={data.companyPhone} onChange={v => handlePhoneChange(v)} placeholder="(11) 99999-9999" />
 
       <SectionLabel>Cliente</SectionLabel>
       <Field label="Nome / Razão Social" value={data.clientName} onChange={v => updateField('clientName', v)} placeholder="Cliente Exemplo" />
       <Field label="CNPJ / CPF" value={data.clientCnpjCpf} onChange={v => updateField('clientCnpjCpf', v)} placeholder="000.000.000-00" />
-      <Field label="E-mail" value={data.clientEmail} onChange={v => updateField('clientEmail', v)} placeholder="cliente@email.com" />
+      <Field label="E-mail" value={data.clientEmail} onChange={v => handleEmailChange('clientEmail', v)} placeholder="cliente@email.com" error={emailErrors.client} />
       <Field label="Endereço" value={data.clientAddress} onChange={v => updateField('clientAddress', v)} placeholder="Av. Brasil, 456 - Rio de Janeiro, RJ" />
 
-      <SectionLabel>Dados Bancários / PIX</SectionLabel>
+      <SectionLabel>Pagamento</SectionLabel>
       <div className="mb-3">
-        <FieldLabel>Tipo da chave PIX</FieldLabel>
+        <FieldLabel>Método de Pagamento</FieldLabel>
         <select
-          value={data.pixKeyType}
-          onChange={e => updateField('pixKeyType', e.target.value)}
+          value={data.paymentMethod}
+          onChange={e => updateField('paymentMethod', e.target.value as InvoiceData['paymentMethod'])}
           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors"
         >
-          <option value="CPF">CPF</option>
-          <option value="CNPJ">CNPJ</option>
-          <option value="E-mail">E-mail</option>
-          <option value="Telefone">Telefone</option>
-          <option value="Aleatória">Chave Aleatória</option>
+          <option value="PIX">PIX</option>
+          <option value="Transferência Bancária">Transferência Bancária</option>
+          <option value="Boleto">Boleto</option>
+          <option value="Outro">Outro</option>
         </select>
       </div>
-      <Field label="Chave PIX" value={data.pixKey} onChange={v => updateField('pixKey', v)} placeholder="Sua chave PIX" />
-      <Field label="Banco" value={data.bankName} onChange={v => updateField('bankName', v)} placeholder="Nubank, Itaú, etc." />
+
+      {data.paymentMethod === 'PIX' && (
+        <>
+          <div className="mb-3">
+            <FieldLabel>Tipo da chave PIX</FieldLabel>
+            <select
+              value={data.pixKeyType}
+              onChange={e => updateField('pixKeyType', e.target.value)}
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors"
+            >
+              <option value="CPF">CPF</option>
+              <option value="CNPJ">CNPJ</option>
+              <option value="E-mail">E-mail</option>
+              <option value="Telefone">Telefone</option>
+              <option value="Aleatória">Chave Aleatória</option>
+            </select>
+          </div>
+          <Field label="Chave PIX" value={data.pixKey} onChange={v => updateField('pixKey', v)} placeholder="Sua chave PIX" />
+        </>
+      )}
+
+      {(data.paymentMethod === 'PIX' || data.paymentMethod === 'Transferência Bancária') && (
+        <>
+          <Field label="Banco" value={data.bankName} onChange={v => updateField('bankName', v)} placeholder="Nubank, Itaú, etc." />
+          {data.paymentMethod === 'Transferência Bancária' && (
+            <>
+              <Field label="Agência" value={data.bankAgency} onChange={v => updateField('bankAgency', v)} placeholder="0001" />
+              <Field label="Conta" value={data.bankAccount} onChange={v => updateField('bankAccount', v)} placeholder="12345-6" />
+            </>
+          )}
+        </>
+      )}
 
       <SectionLabel>Detalhes</SectionLabel>
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Nº da Invoice" value={data.invoiceNumber} onChange={v => updateField('invoiceNumber', v)} />
+        <Field label="Nº do Recibo" value={data.invoiceNumber} onChange={v => updateField('invoiceNumber', v)} />
         <Field label="Data de Emissão" value={data.issueDate} onChange={v => updateField('issueDate', v)} type="date" />
       </div>
       <Field label="Data de Vencimento" value={data.dueDate} onChange={v => updateField('dueDate', v)} type="date" />
@@ -106,17 +207,10 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
                 className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
               />
             </div>
-            <div>
-              <span className="text-[10px] text-muted-foreground">Valor (R$)</span>
-              <input
-                type="number"
-                min={0}
-                step={0.01}
-                value={item.rate}
-                onChange={e => updateItem(item.id, 'rate', Number(e.target.value))}
-                className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
-              />
-            </div>
+            <RateInput
+              rate={item.rate}
+              onChange={val => updateItem(item.id, 'rate', val)}
+            />
           </div>
         </div>
       ))}
