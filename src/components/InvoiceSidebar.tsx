@@ -166,28 +166,10 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
                 className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
               />
             </div>
-            <div>
-              <span className="text-[10px] text-muted-foreground">Valor (R$)</span>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={item.rate === 0 && document.activeElement !== document.getElementById(`rate-${item.id}`) ? '' : item.rate}
-                id={`rate-${item.id}`}
-                onFocus={e => { if (item.rate === 0) e.target.value = ''; }}
-                onChange={e => {
-                  const val = e.target.value;
-                  if (val === '' || val === '0') {
-                    updateItem(item.id, 'rate', 0);
-                  } else {
-                    const num = parseFloat(val);
-                    if (!isNaN(num)) updateItem(item.id, 'rate', num);
-                  }
-                }}
-                onBlur={e => { if (e.target.value === '') updateItem(item.id, 'rate', 0); }}
-                placeholder="0,00"
-                className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
-              />
-            </div>
+            <RateInput
+              rate={item.rate}
+              onChange={val => updateItem(item.id, 'rate', val)}
+            />
           </div>
         </div>
       ))}
