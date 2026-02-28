@@ -19,10 +19,13 @@ export interface InvoiceData {
   clientCnpjCpf: string;
   clientAddress: string;
 
-  // Pagamento PIX
+  // Pagamento
+  paymentMethod: 'PIX' | 'Transferência Bancária' | 'Boleto' | 'Outro';
   pixKey: string;
   pixKeyType: string;
   bankName: string;
+  bankAgency: string;
+  bankAccount: string;
 
   // Detalhes da invoice
   invoiceNumber: string;
