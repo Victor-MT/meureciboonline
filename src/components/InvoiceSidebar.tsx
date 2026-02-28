@@ -1,6 +1,6 @@
 import { Plus, Trash2, Download } from 'lucide-react';
 import { InvoiceData, InvoiceItem } from '@/types/invoice';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface Props {
   data: InvoiceData;
