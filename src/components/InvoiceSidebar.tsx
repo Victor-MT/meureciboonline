@@ -50,6 +50,47 @@ function Field({ label, value, onChange, placeholder, type = 'text', error }: {
   );
 }
 
+function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => void }) {
+  const [localValue, setLocalValue] = useState(rate === 0 ? '' : String(rate));
+  const [focused, setFocused] = useState(false);
+
+  // Sync from parent when not focused
+  if (!focused && rate !== 0 && String(rate) !== localValue) {
+    setLocalValue(String(rate));
+  }
+  if (!focused && rate === 0 && localValue !== '') {
+    setLocalValue('');
+  }
+
+  return (
+    <div>
+      <span className="text-[10px] text-muted-foreground">Valor (R$)</span>
+      <input
+        type="text"
+        inputMode="decimal"
+        value={localValue}
+        onFocus={() => setFocused(true)}
+        onChange={e => {
+          const val = e.target.value;
+          setLocalValue(val);
+          if (val === '') {
+            onChange(0);
+          } else {
+            const num = parseFloat(val);
+            if (!isNaN(num)) onChange(num);
+          }
+        }}
+        onBlur={() => {
+          setFocused(false);
+          if (localValue === '') onChange(0);
+        }}
+        placeholder="0,00"
+        className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+      />
+    </div>
+  );
+}
+
 export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, onPrint }: Props) {
   const [emailErrors, setEmailErrors] = useState<{ company?: string; client?: string }>({});
 
