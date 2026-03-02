@@ -1,73 +1,88 @@
-# Welcome to your Lovable project
+# Meu Recibo Online
 
-## Project info
+Aplicação web para criação de recibos profissionais, com visualização em tempo real, suporte a múltiplos itens e exportação para PDF via impressão do navegador.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Objetivo do projeto
 
-## How can I edit this code?
+Facilitar a emissão de recibos de prestação de serviços de forma rápida, simples e privada, sem necessidade de backend.
 
-There are several ways of editing your application.
+Os dados são persistidos localmente no navegador (IndexedDB), sem envio para servidores externos. Garantido privacidade aos dados sensíveis do usuário.
 
-**Use Lovable**
+## Funcionalidades
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Cadastro de dados do emissor e do cliente
+- Suporte a CPF/CNPJ, e-mail, endereço e telefone
+- Itens dinâmicos com quantidade e valor unitário
+- Cálculo automático de subtotal e total
+- Métodos de pagamento: PIX, Transferência Bancária, Boleto e Outro
+- Dados específicos de pagamento (chave PIX, banco, agência, conta)
+- Campo de observações no recibo
+- Exportação para PDF usando `window.print()`
+- Salvamento automático local com IndexedDB
 
-Changes made via Lovable will be committed automatically to this repo.
+## Stack tecnológica
 
-**Use your preferred IDE**
+- React 18
+- TypeScript
+- Vite 5
+- Tailwind CSS
+- shadcn/ui + Radix UI
+- React Router DOM
+- Vitest + Testing Library
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Como rodar localmente
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Pré-requisitos
 
-Follow these steps:
+- Node.js 18+ (recomendado Node.js 20+)
+- npm 9+
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Passo a passo
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+git clone <URL_DO_SEU_REPOSITORIO>
+cd meureciboonline
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Após iniciar, acesse o endereço exibido no terminal (por padrão, `http://localhost:5173`).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Scripts disponíveis
 
-**Use GitHub Codespaces**
+- `npm run dev`: inicia ambiente de desenvolvimento
+- `npm run build`: gera build de produção
+- `npm run preview`: serve build localmente
+- `npm run lint`: executa lint com ESLint
+- `npm run test`: executa testes uma vez
+- `npm run test:watch`: executa testes em modo observação
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Estrutura do projeto
 
-## What technologies are used for this project?
+```text
+src/
+  components/    # Componentes visuais (sidebar, preview, UI base)
+  hooks/         # Regras de estado e lógica da aplicação
+  lib/           # Utilitários e integração com IndexedDB
+  pages/         # Páginas da aplicação
+  types/         # Tipagens de domínio (InvoiceData, InvoiceItem)
+  test/          # Setup e testes automatizados
+```
 
-This project is built with:
+## Privacidade
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Este projeto armazena os dados apenas no navegador do usuário, via IndexedDB.
+Nenhuma informação de recibo é enviada para APIs externas.
 
-## How can I deploy this project?
+## Deploy
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+O projeto é uma SPA estática e pode ser publicado em provedores como:
 
-## Can I connect a custom domain to my Lovable project?
+- Vercel
+- Netlify
+- Cloudflare Pages
+- GitHub Pages (com configuração de rotas SPA)
 
-Yes, you can!
+## Licença
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE).
