@@ -17,7 +17,7 @@ function formatDate(dateStr: string) {
 
 export default function InvoicePreview({ data, subtotal }: Props) {
   return (
-    <div className="flex-1 min-h-screen flex items-start justify-center p-6 md:p-10 overflow-auto bg-background">
+    <div className="flex-1 min-h-[50vh] md:min-h-screen flex items-start justify-center p-6 md:p-10 overflow-auto bg-background">
       <div id="invoice-preview" className="invoice-paper w-full max-w-[720px] rounded-lg p-8 md:p-12">
         {/* Header */}
         <div className="flex justify-between items-start mb-10">
