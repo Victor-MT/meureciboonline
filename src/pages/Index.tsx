@@ -1,7 +1,7 @@
 import { useInvoice } from '@/hooks/useInvoice';
 import InvoiceSidebar from '@/components/InvoiceSidebar';
 import InvoicePreview from '@/components/InvoicePreview';
-import { Github, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 const Index = () => {
   const { data, updateField, updateItem, addItem, removeItem, resetData, subtotal, loaded } = useInvoice();
