@@ -1,6 +1,6 @@
-import { Plus, Trash2, Download } from 'lucide-react';
+import { Plus, Trash2, Download, RotateCcw } from 'lucide-react';
 import { InvoiceData, InvoiceItem } from '@/types/invoice';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 interface Props {
   data: InvoiceData;
@@ -8,6 +8,7 @@ interface Props {
   updateItem: (id: string, field: keyof InvoiceItem, value: string | number) => void;
   addItem: () => void;
   removeItem: (id: string) => void;
+  resetData: () => void;
   onPrint: () => void;
 }
 
@@ -53,7 +54,7 @@ function Field({ label, value, onChange, placeholder, type = 'text', error }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors ${error ? 'border-destructive' : 'border-input'}`}
+        className={`w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-colors ${error ? 'border-destructive' : 'border-input'}`}
       />
       {error && <p className="text-[11px] text-destructive mt-1">{error}</p>}
     </div>
@@ -64,7 +65,6 @@ function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => 
   const [localValue, setLocalValue] = useState(rate === 0 ? '' : String(rate));
   const [focused, setFocused] = useState(false);
 
-  // Sync from parent when not focused
   if (!focused && rate !== 0 && String(rate) !== localValue) {
     setLocalValue(String(rate));
   }
@@ -95,13 +95,13 @@ function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => 
           if (localValue === '') onChange(0);
         }}
         placeholder="0,00"
-        className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+        className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors"
       />
     </div>
   );
 }
 
-export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, onPrint }: Props) {
+export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, resetData, onPrint }: Props) {
   const [emailErrors, setEmailErrors] = useState<{ company?: string; client?: string }>({});
 
   const handleEmailChange = (field: 'companyEmail' | 'clientEmail', value: string) => {
@@ -119,8 +119,19 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
   };
 
   return (
-    <aside className="no-print w-full md:w-[340px] lg:w-[380px] shrink-0 h-screen overflow-y-auto border-r border-border bg-card p-5">
-      <h1 className="font-mono-display text-lg font-bold mb-6 tracking-tight">Gerador de Recibo</h1>
+    <aside className="no-print w-full md:w-[340px] lg:w-[380px] shrink-0 md:h-screen overflow-y-auto border-b md:border-b-0 md:border-r border-border bg-card p-5 pt-14 md:pt-5">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-mono-display text-lg font-bold tracking-tight">
+          <span className="text-accent">Recibo</span> Fácil
+        </h1>
+        <button
+          onClick={resetData}
+          title="Limpar todos os campos"
+          className="flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:border-destructive/30 transition-colors"
+        >
+          <RotateCcw className="h-3 w-3" /> Limpar
+        </button>
+      </div>
 
       <SectionLabel>Emissor</SectionLabel>
       <Field label="Razão Social / Nome" value={data.companyName} onChange={v => updateField('companyName', v)} placeholder="Sua Empresa Ltda" />
@@ -141,7 +152,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
         <select
           value={data.paymentMethod}
           onChange={e => updateField('paymentMethod', e.target.value as InvoiceData['paymentMethod'])}
-          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors"
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-colors"
         >
           <option value="PIX">PIX</option>
           <option value="Transferência Bancária">Transferência Bancária</option>
@@ -157,7 +168,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
             <select
               value={data.pixKeyType}
               onChange={e => updateField('pixKeyType', e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-foreground/30 transition-colors"
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-colors"
             >
               <option value="CPF">CPF</option>
               <option value="CNPJ">CNPJ</option>
@@ -204,7 +215,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
             value={item.description}
             onChange={e => updateItem(item.id, 'description', e.target.value)}
             placeholder="Descrição do serviço"
-            className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm mb-2 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+            className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm mb-2 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors"
           />
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -214,7 +225,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
                 min={1}
                 value={item.quantity}
                 onChange={e => updateItem(item.id, 'quantity', Number(e.target.value))}
-                className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors"
+                className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors"
               />
             </div>
             <RateInput
@@ -237,12 +248,12 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
         onChange={e => updateField('notes', e.target.value)}
         placeholder="Observações adicionais..."
         rows={3}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 transition-colors resize-none mb-4"
+        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors resize-none mb-4"
       />
 
       <button
         onClick={onPrint}
-        className="w-full flex items-center justify-center gap-2 rounded-md bg-foreground text-background py-2.5 text-sm font-medium hover:bg-foreground/90 transition-colors"
+        className="w-full flex items-center justify-center gap-2 rounded-md bg-accent text-accent-foreground py-2.5 text-sm font-medium hover:bg-accent/90 transition-colors"
       >
         <Download className="h-4 w-4" /> Baixar PDF
       </button>

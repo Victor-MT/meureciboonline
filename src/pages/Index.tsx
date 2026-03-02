@@ -1,9 +1,10 @@
 import { useInvoice } from '@/hooks/useInvoice';
 import InvoiceSidebar from '@/components/InvoiceSidebar';
 import InvoicePreview from '@/components/InvoicePreview';
+import { Github, ShieldCheck } from 'lucide-react';
 
 const Index = () => {
-  const { data, updateField, updateItem, addItem, removeItem, subtotal, loaded } = useInvoice();
+  const { data, updateField, updateItem, addItem, removeItem, resetData, subtotal, loaded } = useInvoice();
 
   const handlePrint = () => {
     window.print();
@@ -12,16 +13,51 @@ const Index = () => {
   if (!loaded) return null;
 
   return (
-    <div className="flex min-h-screen">
-      <InvoiceSidebar
-        data={data}
-        updateField={updateField}
-        updateItem={updateItem}
-        addItem={addItem}
-        removeItem={removeItem}
-        onPrint={handlePrint}
-      />
-      <InvoicePreview data={data} subtotal={subtotal} />
+    <div className="flex flex-col min-h-screen">
+      {/* GitHub link top-left */}
+      <a
+        href="https://github.com/seu-usuario"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="no-print fixed top-4 left-4 z-50 md:top-5 md:left-5 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors"
+        aria-label="GitHub"
+      >
+        <Github className="h-5 w-5 text-foreground" />
+      </a>
+
+      {/* Main content */}
+      <div className="flex flex-col md:flex-row flex-1">
+        <InvoiceSidebar
+          data={data}
+          updateField={updateField}
+          updateItem={updateItem}
+          addItem={addItem}
+          removeItem={removeItem}
+          resetData={resetData}
+          onPrint={handlePrint}
+        />
+        <InvoicePreview data={data} subtotal={subtotal} />
+      </div>
+
+      {/* Footer */}
+      <footer className="no-print border-t border-border bg-card px-6 py-6 text-center text-xs text-muted-foreground space-y-3">
+        <div className="flex items-center justify-center gap-1.5">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+          <p>
+            Seus dados são armazenados exclusivamente no seu navegador (IndexedDB). Nenhuma informação é enviada para servidores externos, garantindo total privacidade.
+          </p>
+        </div>
+        <p>
+          Inspirado em{' '}
+          <a href="https://invoi.xyz/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
+            invoi.xyz
+          </a>
+          {' '}· Feito com 🇧🇷 por{' '}
+          <a href="https://github.com/seu-usuario" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
+            Seu Nome
+          </a>
+        </p>
+      </footer>
     </div>
   );
 };

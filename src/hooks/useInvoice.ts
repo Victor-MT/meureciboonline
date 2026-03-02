@@ -48,7 +48,11 @@ export function useInvoice() {
     }));
   }, []);
 
+  const resetData = useCallback(() => {
+    setData({ ...defaultInvoice, items: [{ id: Date.now().toString(), description: '', quantity: 1, rate: 0 }] });
+  }, []);
+
   const subtotal = data.items.reduce((sum, item) => sum + item.quantity * item.rate, 0);
 
-  return { data, updateField, updateItem, addItem, removeItem, subtotal, loaded };
+  return { data, updateField, updateItem, addItem, removeItem, resetData, subtotal, loaded };
 }
