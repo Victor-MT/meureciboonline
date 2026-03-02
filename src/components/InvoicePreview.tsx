@@ -145,6 +145,7 @@ export default function InvoicePreview({ data, subtotal }: Props) {
           </div>
         )}
       </div>
+      </div>
     </div>
   );
 }
