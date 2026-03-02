@@ -43,8 +43,12 @@ const Index = () => {
             invoi.xyz
           </a>
           {' '}· Feito com 🇧🇷 por{' '}
-          <a href="https://github.com/seu-usuario" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
-            Seu Nome
+          <a href="https://github.com/Victor-MT" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
+            Victor Hugo
+          </a>
+          {' '}e{' '}
+          <a href="https://github.com/c4iofranca" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
+            Caio França
           </a>
         </p>
       </footer>
