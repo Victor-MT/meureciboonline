@@ -1,7 +1,7 @@
 import { useInvoice } from '@/hooks/useInvoice';
 import InvoiceSidebar from '@/components/InvoiceSidebar';
 import InvoicePreview from '@/components/InvoicePreview';
-import { Github, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 const Index = () => {
   const { data, updateField, updateItem, addItem, removeItem, resetData, subtotal, loaded } = useInvoice();
@@ -14,16 +14,6 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* GitHub link top-left */}
-      <a
-        href="https://github.com/seu-usuario"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="no-print fixed top-4 left-4 z-50 md:top-5 md:left-5 p-2 rounded-full bg-card border border-border hover:bg-accent/10 transition-colors"
-        aria-label="GitHub"
-      >
-        <Github className="h-5 w-5 text-foreground" />
-      </a>
 
       {/* Main content */}
       <div className="flex flex-col md:flex-row flex-1">
