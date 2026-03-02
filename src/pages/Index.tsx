@@ -42,7 +42,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="no-print border-t border-border bg-card px-6 py-6 text-center text-xs text-muted-foreground space-y-3">
         <div className="flex items-center justify-center gap-1.5">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+          <ShieldCheck className="h-3.5 w-3.5 text-accent" />
           <p>
             Seus dados são armazenados exclusivamente no seu navegador (IndexedDB). Nenhuma informação é enviada para servidores externos, garantindo total privacidade.
           </p>
