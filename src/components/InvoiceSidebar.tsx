@@ -122,7 +122,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
     <aside className="no-print w-full md:w-[340px] lg:w-[380px] shrink-0 md:h-screen overflow-y-auto border-b md:border-b-0 md:border-r border-border bg-card p-5 pt-14 md:pt-5">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-mono-display text-lg font-bold tracking-tight">
-          Meu <span className="text-accent">Recibo</span> <span style={{ color: 'hsl(51 100% 50% / 0.55)' }}>Online</span>
+          Meu <span className="text-accent">Recibo</span> <span style={{ color: 'hsl(51 100% 40% / 0.75)' }}>Online</span>
         </h1>
         <button
           onClick={resetData}
