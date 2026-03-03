@@ -189,14 +189,14 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
 
       <SectionLabel>Emissor</SectionLabel>
       <Field label="Razão Social / Nome" value={data.companyName} onChange={v => updateField('companyName', v)} placeholder="Sua Empresa Ltda" />
-      <Field label="CNPJ / CPF" value={data.companyCnpj} onChange={v => updateField('companyCnpj', formatCnpjCpf(v))} placeholder="00.000.000/0000-00" />
+      <Field label="CNPJ / CPF" value={data.companyCnpj} onChange={v => handleDocChange('companyCnpj', v)} placeholder="00.000.000/0000-00" error={docErrors.company} />
       <Field label="E-mail" value={data.companyEmail} onChange={v => handleEmailChange('companyEmail', v)} placeholder="contato@empresa.com" error={emailErrors.company} />
       <Field label="Endereço" value={data.companyAddress} onChange={v => updateField('companyAddress', v)} placeholder="Rua Exemplo, 123 - São Paulo, SP" />
       <Field label="Telefone" value={data.companyPhone} onChange={v => handlePhoneChange(v)} placeholder="(11) 99999-9999" />
 
       <SectionLabel>Cliente</SectionLabel>
       <Field label="Nome / Razão Social" value={data.clientName} onChange={v => updateField('clientName', v)} placeholder="Cliente Exemplo" />
-      <Field label="CNPJ / CPF" value={data.clientCnpjCpf} onChange={v => updateField('clientCnpjCpf', formatCnpjCpf(v))} placeholder="000.000.000-00" />
+      <Field label="CNPJ / CPF" value={data.clientCnpjCpf} onChange={v => handleDocChange('clientCnpjCpf', v)} placeholder="000.000.000-00" error={docErrors.client} />
       <Field label="E-mail" value={data.clientEmail} onChange={v => handleEmailChange('clientEmail', v)} placeholder="cliente@email.com" error={emailErrors.client} />
       <Field label="Endereço" value={data.clientAddress} onChange={v => updateField('clientAddress', v)} placeholder="Av. Brasil, 456 - Rio de Janeiro, RJ" />
 
