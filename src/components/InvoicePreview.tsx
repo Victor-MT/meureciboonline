@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { InvoiceData } from '@/types/invoice';
 import { X, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Props {
   data: InvoiceData;
@@ -21,10 +22,19 @@ function formatDate(dateStr: string) {
 export default function InvoicePreview({ data, subtotal }: Props) {
   const [showPremium, setShowPremium] = useState(false);
   const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    if (!email.trim()) {
-      toast.error('Por favor, insira seu e-mail.');
+  const handleSubmit = async () => {
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      toast.error('Por favor, insira um e-mail válido.');
+      return;
+    }
+    setSubmitting(true);
+    const { error } = await supabase.from('premium_interests').insert({ email: trimmed });
+    setSubmitting(false);
+    if (error) {
+      toast.error('Erro ao enviar. Tente novamente.');
       return;
     }
     toast.success('Obrigado pelo interesse! Entraremos em contato em breve.');
@@ -74,9 +84,10 @@ export default function InvoicePreview({ data, subtotal }: Props) {
                 />
                 <button
                   onClick={handleSubmit}
-                  className="w-full rounded-md bg-accent text-accent-foreground py-2 text-sm font-medium hover:bg-accent/90 transition-colors"
+                  disabled={submitting}
+                  className="w-full rounded-md bg-accent text-accent-foreground py-2 text-sm font-medium hover:bg-accent/90 transition-colors disabled:opacity-50"
                 >
-                  Tenho interesse
+                  {submitting ? 'Enviando...' : 'Tenho interesse'}
                 </button>
               </div>
             )}
