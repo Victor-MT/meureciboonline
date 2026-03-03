@@ -19,20 +19,69 @@ function formatDate(dateStr: string) {
 }
 
 export default function InvoicePreview({ data, subtotal }: Props) {
+  const [showPremium, setShowPremium] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const handleSubmit = () => {
+    if (!email.trim()) {
+      toast.error('Por favor, insira seu e-mail.');
+      return;
+    }
+    toast.success('Obrigado pelo interesse! Entraremos em contato em breve.');
+    setEmail('');
+    setShowPremium(false);
+  };
+
   return (
     <div className="flex-1 min-h-[50vh] md:min-h-screen flex items-start justify-center p-6 md:p-10 overflow-auto bg-background">
       <div className="relative w-full max-w-[720px]">
-        {/* Social links - top-right of paper, hidden on print */}
-        <div className="no-print flex items-center gap-3 justify-end mb-2 pr-1 ">
-          {/* <a
-            href="https://x.com/seu-usuario"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground/40 hover:text-muted-foreground transition-colors"
-            aria-label="Twitter / X"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a> */}
+        {/* Top bar - social links + premium */}
+        <div className="no-print flex items-center justify-end gap-4 mb-2 pr-1">
+          <div className="relative">
+            <button
+              onClick={() => setShowPremium(!showPremium)}
+              className="flex items-center gap-1 text-xs text-muted-foreground/40 hover:text-muted-foreground/60 transition-colors"
+            >
+              <Sparkles className="h-3 w-3" />
+              Acesso Premium
+            </button>
+
+            {showPremium && (
+              <div className="absolute right-0 top-full mt-2 w-80 rounded-lg border border-border bg-card p-5 shadow-xl z-50 animate-in fade-in-0 zoom-in-95">
+                <button
+                  onClick={() => setShowPremium(false)}
+                  className="absolute right-3 top-3 text-muted-foreground/60 hover:text-foreground transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+
+                <h3 className="font-semibold text-sm mb-3">🚀 Versão Premium</h3>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Quer levar seus recibos para o próximo nível? Cadastre-se para ser notificado quando lançarmos:
+                </p>
+                <ul className="text-xs text-muted-foreground space-y-1.5 mb-4">
+                  <li>✅ Salvar e gerenciar todos os seus recibos</li>
+                  <li>✅ Notificações de cobrança por e-mail</li>
+                  <li>✅ Emissão de recibos em lote</li>
+                </ul>
+
+                <input
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm mb-3 focus:outline-none focus:ring-1 focus:ring-accent"
+                />
+                <button
+                  onClick={handleSubmit}
+                  className="w-full rounded-md bg-accent text-accent-foreground py-2 text-sm font-medium hover:bg-accent/90 transition-colors"
+                >
+                  Tenho interesse
+                </button>
+              </div>
+            )}
+          </div>
+
           <a
             href="https://github.com/Victor-MT/meureciboonline"
             target="_blank"
