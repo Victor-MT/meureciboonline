@@ -34,7 +34,7 @@ const Index = () => {
         <div className="flex items-center justify-center gap-1.5">
           <ShieldCheck className="h-3.5 w-3.5 text-accent" />
           <p>
-            Seus dados são armazenados exclusivamente no seu navegador (IndexedDB). Nenhuma informação é enviada para servidores externos, garantindo total privacidade.
+            Seus dados são armazenados exclusivamente no seu navegador. Nenhuma informação é enviada para servidores externos, garantindo total privacidade.
           </p>
         </div>
         <p>
@@ -42,7 +42,7 @@ const Index = () => {
           <a href="https://invoi.xyz/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
             invoi.xyz
           </a>
-          {' '}· Feito com 🇧🇷 por{' '}
+          {' '}· Desenvolvido por{' '}
           <a href="https://github.com/Victor-MT" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">
             Victor Hugo
           </a>
