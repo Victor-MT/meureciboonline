@@ -148,6 +148,7 @@ function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => 
 
 export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, resetData, onPrint }: Props) {
   const [emailErrors, setEmailErrors] = useState<{ company?: string; client?: string }>({});
+  const [docErrors, setDocErrors] = useState<{ company?: string; client?: string }>({});
 
   const handleEmailChange = (field: 'companyEmail' | 'clientEmail', value: string) => {
     updateField(field, value);
@@ -157,6 +158,14 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
     } else {
       setEmailErrors(prev => ({ ...prev, [key]: undefined }));
     }
+  };
+
+  const handleDocChange = (field: 'companyCnpj' | 'clientCnpjCpf', value: string) => {
+    const formatted = formatCnpjCpf(value);
+    updateField(field, formatted);
+    const key = field === 'companyCnpj' ? 'company' : 'client';
+    const error = validateCpfCnpj(formatted);
+    setDocErrors(prev => ({ ...prev, [key]: error }));
   };
 
   const handlePhoneChange = (value: string) => {
