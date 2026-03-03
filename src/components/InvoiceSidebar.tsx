@@ -75,10 +75,13 @@ function validateCnpj(cnpj: string): boolean {
 function validateCpfCnpj(value: string): string | undefined {
   if (!value) return undefined;
   const digits = value.replace(/\D/g, '');
+  if (digits.length === 0) return undefined;
   if (digits.length <= 11) {
-    if (digits.length === 11 && !validateCpf(value)) return 'CPF inválido';
+    if (digits.length < 11) return 'CPF incompleto';
+    if (!validateCpf(value)) return 'CPF inválido';
   } else {
-    if (digits.length === 14 && !validateCnpj(value)) return 'CNPJ inválido';
+    if (digits.length < 14) return 'CNPJ incompleto';
+    if (!validateCnpj(value)) return 'CNPJ inválido';
   }
   return undefined;
 }
