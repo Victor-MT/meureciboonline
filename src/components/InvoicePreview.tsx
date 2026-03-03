@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { InvoiceData } from '@/types/invoice';
+import { X, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Props {
   data: InvoiceData;
