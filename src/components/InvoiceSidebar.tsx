@@ -38,6 +38,51 @@ function formatCnpjCpf(value: string): string {
   return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`;
 }
 
+function validateCpf(cpf: string): boolean {
+  const digits = cpf.replace(/\D/g, '');
+  if (digits.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(digits)) return false;
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(digits[i]) * (10 - i);
+  let rest = (sum * 10) % 11;
+  if (rest === 10) rest = 0;
+  if (rest !== parseInt(digits[9])) return false;
+  sum = 0;
+  for (let i = 0; i < 10; i++) sum += parseInt(digits[i]) * (11 - i);
+  rest = (sum * 10) % 11;
+  if (rest === 10) rest = 0;
+  return rest === parseInt(digits[10]);
+}
+
+function validateCnpj(cnpj: string): boolean {
+  const digits = cnpj.replace(/\D/g, '');
+  if (digits.length !== 14) return false;
+  if (/^(\d)\1{13}$/.test(digits)) return false;
+  const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  let sum = 0;
+  for (let i = 0; i < 12; i++) sum += parseInt(digits[i]) * weights1[i];
+  let rest = sum % 11;
+  if (rest < 2) { if (parseInt(digits[12]) !== 0) return false; }
+  else { if (parseInt(digits[12]) !== 11 - rest) return false; }
+  sum = 0;
+  for (let i = 0; i < 13; i++) sum += parseInt(digits[i]) * weights2[i];
+  rest = sum % 11;
+  if (rest < 2) return parseInt(digits[13]) === 0;
+  return parseInt(digits[13]) === 11 - rest;
+}
+
+function validateCpfCnpj(value: string): string | undefined {
+  if (!value) return undefined;
+  const digits = value.replace(/\D/g, '');
+  if (digits.length <= 11) {
+    if (digits.length === 11 && !validateCpf(value)) return 'CPF inválido';
+  } else {
+    if (digits.length === 14 && !validateCnpj(value)) return 'CNPJ inválido';
+  }
+  return undefined;
+}
+
 function isValidEmail(email: string): boolean {
   if (!email) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -103,6 +148,7 @@ function RateInput({ rate, onChange }: { rate: number; onChange: (v: number) => 
 
 export default function InvoiceSidebar({ data, updateField, updateItem, addItem, removeItem, resetData, onPrint }: Props) {
   const [emailErrors, setEmailErrors] = useState<{ company?: string; client?: string }>({});
+  const [docErrors, setDocErrors] = useState<{ company?: string; client?: string }>({});
 
   const handleEmailChange = (field: 'companyEmail' | 'clientEmail', value: string) => {
     updateField(field, value);
@@ -112,6 +158,14 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
     } else {
       setEmailErrors(prev => ({ ...prev, [key]: undefined }));
     }
+  };
+
+  const handleDocChange = (field: 'companyCnpj' | 'clientCnpjCpf', value: string) => {
+    const formatted = formatCnpjCpf(value);
+    updateField(field, formatted);
+    const key = field === 'companyCnpj' ? 'company' : 'client';
+    const error = validateCpfCnpj(formatted);
+    setDocErrors(prev => ({ ...prev, [key]: error }));
   };
 
   const handlePhoneChange = (value: string) => {
@@ -135,14 +189,14 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
 
       <SectionLabel>Emissor</SectionLabel>
       <Field label="Razão Social / Nome" value={data.companyName} onChange={v => updateField('companyName', v)} placeholder="Sua Empresa Ltda" />
-      <Field label="CNPJ / CPF" value={data.companyCnpj} onChange={v => updateField('companyCnpj', formatCnpjCpf(v))} placeholder="00.000.000/0000-00" />
+      <Field label="CNPJ / CPF" value={data.companyCnpj} onChange={v => handleDocChange('companyCnpj', v)} placeholder="00.000.000/0000-00" error={docErrors.company} />
       <Field label="E-mail" value={data.companyEmail} onChange={v => handleEmailChange('companyEmail', v)} placeholder="contato@empresa.com" error={emailErrors.company} />
       <Field label="Endereço" value={data.companyAddress} onChange={v => updateField('companyAddress', v)} placeholder="Rua Exemplo, 123 - São Paulo, SP" />
       <Field label="Telefone" value={data.companyPhone} onChange={v => handlePhoneChange(v)} placeholder="(11) 99999-9999" />
 
       <SectionLabel>Cliente</SectionLabel>
       <Field label="Nome / Razão Social" value={data.clientName} onChange={v => updateField('clientName', v)} placeholder="Cliente Exemplo" />
-      <Field label="CNPJ / CPF" value={data.clientCnpjCpf} onChange={v => updateField('clientCnpjCpf', formatCnpjCpf(v))} placeholder="000.000.000-00" />
+      <Field label="CNPJ / CPF" value={data.clientCnpjCpf} onChange={v => handleDocChange('clientCnpjCpf', v)} placeholder="000.000.000-00" error={docErrors.client} />
       <Field label="E-mail" value={data.clientEmail} onChange={v => handleEmailChange('clientEmail', v)} placeholder="cliente@email.com" error={emailErrors.client} />
       <Field label="Endereço" value={data.clientAddress} onChange={v => updateField('clientAddress', v)} placeholder="Av. Brasil, 456 - Rio de Janeiro, RJ" />
 
