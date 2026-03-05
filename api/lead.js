@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   const { error } = await supabase
-    .from("leads")
+    .from("premium_interests")
     .insert({ email });
 
   if (error) {
