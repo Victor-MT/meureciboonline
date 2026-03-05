@@ -35,6 +35,9 @@ export interface InvoiceData {
 
   // Itens
   items: InvoiceItem[];
+
+  // Assinatura
+  showSignature: boolean;
 }
 
 export const defaultInvoice: InvoiceData = {
@@ -57,6 +60,7 @@ export const defaultInvoice: InvoiceData = {
   issueDate: new Date().toISOString().split('T')[0],
   dueDate: '',
   notes: '',
+  showSignature: false,
   items: [
     { id: '1', description: '', quantity: 1, rate: 0 },
   ],

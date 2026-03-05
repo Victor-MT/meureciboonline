@@ -212,6 +212,22 @@ export default function InvoicePreview({ data, subtotal }: Props) {
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">{data.notes}</p>
           </div>
         )}
+
+        {/* Signature */}
+        {data.showSignature && (
+          <div className="border-t border-border pt-10 mt-8">
+            <div className="w-64 mx-auto text-center">
+              <div className="border-b border-foreground/40 mb-2" />
+              <p className="text-xs text-muted-foreground">Assinatura do Emissor</p>
+              {data.companyName && (
+                <p className="text-xs font-medium mt-1">{data.companyName}</p>
+              )}
+              {data.companyCnpj && (
+                <p className="text-[10px] text-muted-foreground">{data.companyCnpj}</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       </div>
     </div>
