@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { InvoiceData } from '@/types/invoice';
 import { X, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
 
 interface Props {
   data: InvoiceData;
@@ -31,9 +30,15 @@ export default function InvoicePreview({ data, subtotal }: Props) {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from('premium_interests').insert({ email: trimmed });
+      const response = await fetch("/api/lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
     setSubmitting(false);
-    if (error) {
+    if (!response.ok) {
       toast.error('Erro ao enviar. Tente novamente.');
       return;
     }
