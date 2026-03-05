@@ -2,12 +2,20 @@ import { useInvoice } from '@/hooks/useInvoice';
 import InvoiceSidebar from '@/components/InvoiceSidebar';
 import InvoicePreview from '@/components/InvoicePreview';
 import { ShieldCheck } from 'lucide-react';
+import { trackEvent } from "../utils/analytics";
 
 const Index = () => {
   const { data, updateField, updateItem, addItem, removeItem, resetData, subtotal, loaded } = useInvoice();
 
   const handlePrint = () => {
+
+    trackEvent("print_receipt", {
+      event_category: "engagement",
+      event_label: "botao_imprimir"
+    });
+    
     window.print();
+    
     if (data.showSignature) {
       setTimeout(() => {
         import('sonner').then(({ toast }) => {
@@ -16,7 +24,15 @@ const Index = () => {
             duration: 12000,
             action: {
               label: 'Assinar no Gov.br →',
-              onClick: () => window.open('https://www.gov.br/governodigital/pt-br/identidade/assinatura-eletronica', '_blank'),
+              onClick: () => {
+                
+                trackEvent("click_gov_signature", {
+                  event_category: "engagement",
+                  event_label: "link_assinatura_gov"
+                });
+
+                window.open('https://www.gov.br/governodigital/pt-br/identidade/assinatura-eletronica', '_blank')
+              },
             },
           });
         });
