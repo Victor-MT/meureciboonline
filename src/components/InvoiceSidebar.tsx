@@ -299,15 +299,14 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
         <Plus className="h-4 w-4" /> Adicionar item
       </button>
 
-      <SectionLabel>Assinatura</SectionLabel>
-      <label className="flex items-center gap-2.5 mb-4 cursor-pointer select-none">
+      <label className="flex items-center gap-2 mb-4 cursor-pointer select-none w-full rounded-md border border-dashed border-border py-2 justify-center text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
         <input
           type="checkbox"
           checked={data.showSignature}
           onChange={e => updateField('showSignature', e.target.checked)}
-          className="h-4 w-4 rounded border-input accent-accent"
+          className="h-3.5 w-3.5 rounded border-input accent-accent"
         />
-        <span className="text-sm text-foreground">Exibir linha de assinatura</span>
+        Exibir linha de assinatura
       </label>
 
       <SectionLabel>Observações</SectionLabel>
