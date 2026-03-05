@@ -317,13 +317,6 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
         />
         Exibir linha de assinatura
       </label>
-      <textarea
-        value={data.notes}
-        onChange={e => updateField('notes', e.target.value)}
-        placeholder="Observações adicionais..."
-        rows={3}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors resize-none mb-4"
-      />
 
       <button
         onClick={onPrint}
