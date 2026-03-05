@@ -308,7 +308,7 @@ export default function InvoiceSidebar({ data, updateField, updateItem, addItem,
         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors resize-none mb-3"
       />
 
-      <label className="flex items-center justify-end gap-2 mb-4 cursor-pointer select-none text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <label className="flex items-center gap-2 mb-4 cursor-pointer select-none text-xs text-muted-foreground hover:text-foreground transition-colors">
         <input
           type="checkbox"
           checked={data.showSignature}
