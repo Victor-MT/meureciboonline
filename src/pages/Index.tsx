@@ -8,6 +8,20 @@ const Index = () => {
 
   const handlePrint = () => {
     window.print();
+    if (data.showSignature) {
+      setTimeout(() => {
+        import('sonner').then(({ toast }) => {
+          toast('✍️ Assine seu documento digitalmente!', {
+            description: 'Use a assinatura eletrônica do Gov.br para validar seu recibo com validade jurídica.',
+            duration: 12000,
+            action: {
+              label: 'Assinar no Gov.br →',
+              onClick: () => window.open('https://www.gov.br/governodigital/pt-br/identidade/assinatura-eletronica', '_blank'),
+            },
+          });
+        });
+      }, 1000);
+    }
   };
 
   if (!loaded) return null;
