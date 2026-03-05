@@ -77,6 +77,7 @@ export default function InvoicePreview({ data, subtotal }: Props) {
                 <ul className="text-xs text-muted-foreground space-y-1.5 mb-4">
                   <li>✅ Salvar e gerenciar todos os seus recibos</li>
                   <li>✅ Notificações de cobrança por e-mail</li>
+                  <li>✅ Integração com assinatura digital</li>
                   <li>✅ Emissão de recibos em lote</li>
                 </ul>
 
