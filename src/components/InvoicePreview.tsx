@@ -215,7 +215,7 @@ export default function InvoicePreview({ data, subtotal }: Props) {
 
         {/* Signature */}
         {data.showSignature && (
-          <div className="border-t border-border pt-14 mt-8">
+          <div className="border-t border-border pt-20 mt-8">
             <div className="w-72 mx-auto text-center">
               <div className="border-b border-foreground/40 mb-2" />
               <p className="text-xs text-muted-foreground">Assinatura do Emissor</p>
