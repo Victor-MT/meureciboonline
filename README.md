@@ -2,7 +2,7 @@
 
 Aplicação web para criação de recibos profissionais, com visualização em tempo real, suporte a múltiplos itens e exportação para PDF via impressão do navegador.
 
-![Demo do Meu Recibo Online](/assets/meureciboonline.png)
+![Demo do Meu Recibo Online](/docs/meureciboonline.png)
 ## Objetivo do projeto
 
 Facilitar a emissão de recibos de prestação de serviços de forma rápida, simples e privada, sem necessidade de backend.
